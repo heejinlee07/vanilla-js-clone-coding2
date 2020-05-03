@@ -3,16 +3,19 @@ const ctx = canvas.getContext('2d');
 const colors = document.getElementsByClassName('jsColor');
 const range = document.getElementById('jsRange');
 const mode = document.getElementById('jsMode');
+const saveBtn = document.getElementById('jsSave');
 
-canvas.width = 700;
-canvas.height = 700;
+const INITIAL_COLOR = '#2c2c2c';
+const CANVAS_SIZE = 700;
 
-ctx.strokeStyle = '#2c2c2c';
+canvas.width = CANVAS_SIZE;
+canvas.height = CANVAS_SIZE;
+
+ctx.fillStyle = 'white';
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+ctx.strokeStyle = INITIAL_COLOR;
+ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5;
-ctx.fillStyle = 'green';
-ctx.fillRect(50, 20, 100, 49);
-ctx.fillStyle = 'purple';
-ctx.fillRect(80, 100, 100, 49);
 
 let painting = false;
 let filling = false;
@@ -47,40 +50,62 @@ function onMouseMove(event) {
 function handleColorClick(event) {
   const color = event.target.style.backgroundColor;
   ctx.strokeStyle = color;
+  ctx.fillStyle = color;
 }
 
-function handelRangeChange(event) {
+function handleRangeChange(event) {
   const size = event.target.value;
   ctx.lineWidth = size;
 }
 
-function handelModeClick() {
+function handleModeClick() {
   if (filling === true) {
     filling = false;
-    mode.innerText = 'Fill';
+    mode.innerText = 'Paint';
   } else {
     filling = true;
-    mode.innerText = 'Paint';
-    ctx.fillStyle = ctx.strokeStyle;
+    mode.innerText = 'Fill';
   }
 }
 
-// 4:14 다시
+function handleCanvasClick() {
+  if (filling) {
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  }
+}
+
+function handleCM(event) {
+  event.preventDefault();
+}
+
+function handleSaveClick() {
+  const image = canvas.toDataURL();
+  const link = document.createElement('a');
+  link.href = image;
+  link.download = 'paintJS[EXPORT]';
+  link.click();
+}
 
 if (canvas) {
   canvas.addEventListener('mousemove', onMouseMove);
   canvas.addEventListener('mousedown', startPainting);
   canvas.addEventListener('mouseup', stopPainting);
   canvas.addEventListener('mouseleave', stopPainting);
+  canvas.addEventListener('click', handleCanvasClick);
+  canvas.addEventListener('contextmenu', handleCM);
 }
 
 Array.from(colors).forEach(color => color.addEventListener('click', handleColorClick));
 console.log(Array.from(colors));
 
 if (range) {
-  range.addEventListener('input', handelRangeChange);
+  range.addEventListener('input', handleRangeChange);
 }
 
 if (mode) {
-  mode.addEventListener('click', handelModeClick);
+  mode.addEventListener('click', handleModeClick);
+}
+
+if (saveBtn) {
+  saveBtn.addEventListener('click', handleSaveClick);
 }

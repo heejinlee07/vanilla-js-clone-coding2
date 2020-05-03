@@ -7,12 +7,13 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 0px;
   padding-bottom: 50px 0px;
 }
 
 .jsCanvas-title {
   font-size: 30px;
+  padding-bottom: 50px;
+  padding-top: 30px;
 }
 
 .canvas {
